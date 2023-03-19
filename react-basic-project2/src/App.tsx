@@ -1,6 +1,35 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import styled from '@emotion/styled/macro';
+import Pagination from './components/Pagination';
 import Skeleton from './components/Skeleton';
+import Carousel from './components/Carousel';
+
+
+interface Airline {
+  id: number;
+  name: string;
+  country: string;
+  logo: string;
+  slogan: string;
+  head_quaters: string;
+  website: string;
+  established: string;
+}
+
+interface Passenger {
+  _id: string;
+  name: string;
+  trips: number;
+  airline: Airline,
+  __v: number;
+}
+
+interface Response {
+  totalPassengers: number;
+  totalPages: number;
+  data: Array<Passenger>;
+}
 
 const Base = styled.div`
   display: grid;
@@ -73,21 +102,56 @@ const Item: React.FC = () => ( // 실제 보여줄 컨텐츠
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [items, setItems] = useState<Array<Passenger>>([]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const params = { page, size: 10 };
+      const { data: { totalPages, data } } = await axios.get<Response>('https://api.instantwebtools.net/v1/passenger', { params });
+
+      setTotalPages(totalPages);
+      setItems(data)
+    }
+
+    fetch();
+  }, [page]);
 
   useEffect(() => { // 임의로 로딩 상태 표현
     setTimeout(() => setLoading(false), 2000);
   }, []);
 
+  const handlePageChange = (currentPage: number):void => {
+    setPage(currentPage);
+  }
+
   return (
-    <Base>
-      {
-        loading ?  Array.from({ length: 25 }).map((_, idx) => (
-          <Placeholder key={idx} />
-        )) : Array.from({ length: 25 }).map((_, idx) => (
-          <Item key={idx} />
-        ))
-      }
-    </Base>
+    <>
+      {/* Skeleton */}
+      <Base>
+        {
+          loading ?  Array.from({ length: 25 }).map((_, idx) => (
+            <Placeholder key={idx} />
+            )) : Array.from({ length: 25 }).map((_, idx) => (
+            <Item key={idx} />
+            ))
+          }
+      </Base>
+
+      {/* Carousel */}
+      <Carousel />
+
+      {/* Pagination */}
+      <ul>
+        {
+          items.map((item: any) => {
+            return <li key={item._id}>{item.name + '_' + item._id}</li>
+          })
+        }
+      </ul>
+      <Pagination count={totalPages} page={page} onPageChange={handlePageChange} />
+    </>
   );
 }
 
