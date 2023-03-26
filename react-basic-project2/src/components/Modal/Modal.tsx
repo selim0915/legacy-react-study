@@ -1,5 +1,5 @@
-import React, {ReactNode} from 'react';
 import styled from '@emotion/styled';
+import React, { ReactNode } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
 import Portal from './Portal';
