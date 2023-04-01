@@ -1,11 +1,11 @@
 import styled from '@emotion/styled/macro';
 import axios from 'axios';
 import React, { useEffect, useRef, useState, ReactNode } from 'react';
-import Carousel from './components/Carousel';
-import Modal from './components/Modal/Modal';
-import Pagination from './components/Pagination';
-import Skeleton from './components/Skeleton';
-import useIntersectionObserver from './hooks/useInfiniteScroll';
+import Carousel from './Carousel';
+import Modal from './Modal/Modal';
+import Pagination from './Pagination';
+import Skeleton from './Skeleton';
+import useIntersectionObserver from '../../hooks/useInfiniteScroll';
 
 interface Airline {
   id: number;
@@ -182,7 +182,7 @@ const Item2: React.FC<Props> = ({ children, isLastItem, onFetchMorePassengers })
   )
 }
 
-function App() {
+function Index() {
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -285,4 +285,4 @@ function App() {
   );
 }
 
-export default App;
+export default Index;
